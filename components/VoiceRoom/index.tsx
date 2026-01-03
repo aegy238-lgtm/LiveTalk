@@ -217,7 +217,7 @@ const VoiceRoom: React.FC<any> = ({
 
     if (winAmount > 0) {
       setLuckyWinAmount(winAmount);
-      setTimeout(() => setLuckyWinAmount(0), 6000);
+      setTimeout(() => luckyWinAmount > 0 && setLuckyWinAmount(0), 6000);
     }
 
     // منطق التحقق من هدايا الارتباط والـ CP
@@ -419,9 +419,9 @@ const VoiceRoom: React.FC<any> = ({
 
       onUpdateUser({ coins: currentUser.coins + share });
       setLuckyWinAmount(share);
-      setTimeout(() => setLuckyWinAmount(0), 4000);
+      setTimeout(() => luckyWinAmount > 0 && setLuckyWinAmount(0), 4000);
 
-      await addDoc(collection(db, 'rooms', room.id, 'messages')), {
+      await addDoc(collection(db, 'rooms', room.id, 'messages'), {
         userId: currentUser.id,
         userName: currentUser.name,
         content: `حصل على ${share.toLocaleString()} 🪙 من صندوق الحظ! ✨`,
