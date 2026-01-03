@@ -83,6 +83,7 @@ export default function App() {
   const [announcement, setAnnouncement] = useState<GlobalAnnouncement | null>(null);
   const [appBanner, setAppBanner] = useState('');
   const [appName, setAppName] = useState('لايف توك - LiveTalk');
+  const [authBackground, setAuthBackground] = useState('');
   const [privateChatPartner, setPrivateChatPartner] = useState<User | null>(null);
   const [activeGame, setActiveGame] = useState<GameType | null>(null);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -112,7 +113,6 @@ export default function App() {
 
   const t = translations[language];
 
-  // التحقق الفوري لفتح اللوحة (يعتمد على الإيميل مباشرة لسرعة الضوء)
   const isRootAdmin = useMemo(() => {
     const currentEmail = auth.currentUser?.email?.toLowerCase();
     return currentEmail === ROOT_ADMIN_EMAIL.toLowerCase();
@@ -154,6 +154,7 @@ export default function App() {
         if (data.appBanner) setAppBanner(data.appBanner);
         if (data.appLogo) setAppLogo(data.appLogo);
         if (data.appName) setAppName(data.appName);
+        if (data.authBackground) setAuthBackground(data.authBackground);
       }
     });
 
@@ -297,7 +298,7 @@ export default function App() {
     </div>
   );
 
-  if (!user) return <AuthScreen onAuth={(u) => { setUser(u); localStorage.setItem('voice_chat_user', JSON.stringify(u)); }} appLogo={appLogo} />;
+  if (!user) return <AuthScreen onAuth={(u) => { setUser(u); localStorage.setItem('voice_chat_user', JSON.stringify(u)); }} appLogo={appLogo} authBackground={authBackground} />;
 
   return (
     <div className={`h-[100dvh] w-full bg-[#030816] text-white relative md:max-w-md mx-auto shadow-2xl overflow-hidden flex flex-col font-cairo`}>
@@ -363,9 +364,8 @@ export default function App() {
             <div className="mt-6 px-6 grid grid-cols-4 gap-4 pb-20">
                <button className="flex flex-col items-center gap-1"><div className="p-2 bg-white/5 rounded-full"><UserPlus size={16}/></div><span className="text-[9px]">دعوة</span></button>
                <button className="flex flex-col items-center gap-1"><div className="p-2 bg-white/5 rounded-full"><UserX size={16}/></div><span className="text-[9px]">حظر</span></button>
-               <button className="flex flex-col items-center gap-1"><div className="p-2 bg-white/5 rounded-full"><ShieldCheck size={16}/></div><span className="text-[9px]">خصوصية</span></button>
+               <button className="flex flex-col items-center gap-1"><div className="p-2 bg-white/5 rounded-full"><ShieldCheck size={16}/></div><span className="text-[9px]"> خصوصية</span></button>
                
-               {/* زر لوحة التحكم اللحظي للمالك */}
                <button 
                   onClick={() => {
                     if (isRootAdmin) setShowAdminPanel(true);
@@ -410,7 +410,7 @@ export default function App() {
       {showBagModal && <BagModal isOpen={showBagModal} onClose={() => setShowBagModal(false)} items={storeItems} user={user} onBuy={(item) => EconomyEngine.spendCoins(user.id, user.coins, user.wealth, item.price, user.ownedItems || [], item.id, handleUpdateUser)} onEquip={(item) => handleUpdateUser(item.type === 'frame' ? { frame: item.url } : { activeBubble: item.url })} />}
       {showWalletModal && <WalletModal isOpen={showWalletModal} onClose={() => setShowWalletModal(false)} user={user} onExchange={(amt) => EconomyEngine.exchangeDiamonds(user.id, user.coins, user.diamonds, amt, handleUpdateUser)} />}
       
-      {showAdminPanel && isRootAdmin && <AdminPanel isOpen={showAdminPanel} onClose={() => setShowAdminPanel(false)} currentUser={user!} users={users} onUpdateUser={async (id, data) => await updateDoc(doc(db, 'users', id), data)} rooms={rooms} setRooms={setRooms} onUpdateRoom={handleUpdateRoom} gifts={gifts} storeItems={storeItems} vipLevels={vipLevels} gameSettings={gameSettings} setGameSettings={(s) => setDoc(doc(db, 'appSettings', 'games'), { gameSettings: s }, { merge: true })} appBanner={appBanner} onUpdateAppBanner={(url) => setDoc(doc(db, 'appSettings', 'identity'), { appBanner: url }, { merge: true })} appLogo={appLogo} onUpdateAppLogo={(url) => setDoc(doc(db, 'appSettings', 'identity'), { appLogo: url }, { merge: true })} appName={appName} onUpdateAppName={(name) => setDoc(doc(db, 'appSettings', 'identity'), { appName: name }, { merge: true })} />}
+      {showAdminPanel && isRootAdmin && <AdminPanel isOpen={showAdminPanel} onClose={() => setShowAdminPanel(false)} currentUser={user!} users={users} onUpdateUser={async (id, data) => await updateDoc(doc(db, 'users', id), data)} rooms={rooms} setRooms={setRooms} onUpdateRoom={handleUpdateRoom} gifts={gifts} storeItems={storeItems} vipLevels={vipLevels} gameSettings={gameSettings} setGameSettings={(s) => setDoc(doc(db, 'appSettings', 'games'), { gameSettings: s }, { merge: true })} appBanner={appBanner} onUpdateAppBanner={(url) => setDoc(doc(db, 'appSettings', 'identity'), { appBanner: url }, { merge: true })} appLogo={appLogo} onUpdateAppLogo={(url) => setDoc(doc(db, 'appSettings', 'identity'), { appLogo: url }, { merge: true })} appName={appName} onUpdateAppName={(name) => setDoc(doc(db, 'appSettings', 'identity'), { appName: name }, { merge: true })} authBackground={authBackground} onUpdateAuthBackground={(url) => setDoc(doc(db, 'appSettings', 'identity'), { authBackground: url }, { merge: true })} />}
       
       {showCreateRoomModal && <CreateRoomModal isOpen={showCreateRoomModal} onClose={() => setShowCreateRoomModal(false)} onCreate={executeCreateRoom} />}
       {user.isAgency && showAgencyModal && <AgencyRechargeModal isOpen={showAgencyModal} onClose={() => setShowAgencyModal(false)} agentUser={user} users={users} onCharge={(tid, amt) => EconomyEngine.agencyTransfer(user.id, user.agencyBalance!, tid, users.find(u => u.id === tid)?.coins || 0, users.find(u => u.id === tid)?.rechargePoints || 0, amt, (ad, td) => { handleUpdateUser(ad); updateDoc(doc(db, 'users', tid), td); })} />}

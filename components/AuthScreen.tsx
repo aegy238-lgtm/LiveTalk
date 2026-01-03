@@ -18,6 +18,7 @@ import {
 interface AuthScreenProps {
   onAuth: (user: UserType) => void;
   appLogo?: string;
+  authBackground?: string; // خلفية مخصصة
   canInstall?: boolean;
   onInstall?: () => void;
 }
@@ -25,7 +26,7 @@ interface AuthScreenProps {
 const ROOT_ADMIN_EMAIL = 'root-admin@livetalk.com';
 const ADMIN_MASTER_PASS = '12345678'; // كلمة سر داخلية يتم تجاوزها تلقائياً
 
-const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, appLogo, canInstall, onInstall }) => {
+const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, appLogo, authBackground, canInstall, onInstall }) => {
   const [showSplash, setShowSplash] = useState(true);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -50,7 +51,6 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, appLogo, canInstall, on
     setLoading(true);
     setError('');
 
-    // تجاوز كلمة المرور للمالك: إذا كان البريد هو بريد المالك، نستخدم كلمة سر افتراضية
     const effectivePassword = email.toLowerCase() === ROOT_ADMIN_EMAIL ? (password || ADMIN_MASTER_PASS) : password;
 
     try {
@@ -60,7 +60,6 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, appLogo, canInstall, on
           const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
           if (userDoc.exists()) onAuth(userDoc.data() as UserType);
         } catch (err: any) {
-          // إذا لم يكن الحساب موجوداً للمالك، نقوم بإنشائه فوراً
           if (email.toLowerCase() === ROOT_ADMIN_EMAIL && err.code === 'auth/user-not-found') {
              const userCredential = await createUserWithEmailAndPassword(auth, email, effectivePassword);
              const userData: UserType = {
@@ -96,7 +95,17 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, appLogo, canInstall, on
   };
 
   return (
-    <div className="h-[100dvh] w-full bg-[#020617] flex flex-col items-center justify-center overflow-hidden font-cairo px-6">
+    <div 
+      className="h-[100dvh] w-full bg-[#020617] flex flex-col items-center justify-center overflow-hidden font-cairo px-6 relative"
+      style={{ 
+        backgroundImage: authBackground ? `url(${authBackground})` : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}
+    >
+      {/* طبقة حماية لضمان وضوح المحتوى فوق الخلفية */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] z-0"></div>
+
       <AnimatePresence>
         {showSplash && (
           <motion.div exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-[#020617] flex flex-col items-center justify-center">
@@ -108,7 +117,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, appLogo, canInstall, on
         )}
       </AnimatePresence>
 
-      <div className="w-full max-w-[320px] flex flex-col items-center gap-4">
+      <div className="w-full max-w-[320px] flex flex-col items-center gap-4 relative z-10">
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-600 rounded-[1.4rem] mx-auto mb-2 p-0.5 shadow-xl">
             <img src={LOGO} className="w-full h-full object-cover rounded-[1.2rem]" />
@@ -116,7 +125,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, appLogo, canInstall, on
           <h1 className="text-lg font-black text-white">لايف تـوك</h1>
         </div>
 
-        <div className="w-full bg-slate-900/60 backdrop-blur-2xl border border-white/5 rounded-[1.8rem] p-5 shadow-2xl">
+        <div className="w-full bg-slate-900/70 backdrop-blur-2xl border border-white/5 rounded-[1.8rem] p-5 shadow-2xl">
           <div className="flex bg-black/40 p-1 rounded-xl mb-4">
             <button onClick={() => setIsLogin(true)} className={`flex-1 py-1.5 rounded-lg text-[10px] font-black transition-all ${isLogin ? 'bg-amber-500 text-black' : 'text-slate-500'}`}>دخول</button>
             <button onClick={() => setIsLogin(false)} className={`flex-1 py-1.5 rounded-lg text-[10px] font-black transition-all ${!isLogin ? 'bg-amber-500 text-black' : 'text-slate-500'}`}>تسجيل</button>
@@ -130,8 +139,8 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, appLogo, canInstall, on
               </div>
             )}
             <div className="space-y-1">
-              <label className="text-[8px] font-black text-slate-500 pr-1 uppercase">البريد الإلكتروني</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-black/40 border border-white/5 rounded-xl py-2 px-4 text-white text-[11px] outline-none" placeholder="root-admin@livetalk.com" />
+              <label className="text-[8px] font-black text-slate-500 pr-1 uppercase">ادخل البريد الالكتروني</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-black/40 border border-white/5 rounded-xl py-2 px-4 text-white text-[11px] outline-none" placeholder="example@livetalk.com" />
             </div>
             <div className="space-y-1">
               <label className="text-[8px] font-black text-slate-500 pr-1 uppercase">كلمة السر</label>

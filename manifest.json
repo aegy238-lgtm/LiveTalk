@@ -1,13 +1,13 @@
 
 {
   "short_name": "لايف توك",
-  "name": "LiveTalk - التطبيق الرسمي",
-  "description": "تطبيق الدردشة الصوتية لايف توك - تجربة غامرة وبدون إعلانات",
-  "id": "/?source=pwa",
-  "start_url": "/?source=pwa",
+  "name": "LiveTalk - لايف توك الرسمي",
+  "description": "تطبيق الدردشة الصوتية الاحترافي لأجهزة أندرويد",
+  "id": "/?source=android_pwa",
+  "start_url": "/?source=android_pwa",
   "display": "standalone",
-  "background_color": "#020617",
-  "theme_color": "#020617",
+  "background_color": "#030816",
+  "theme_color": "#030816",
   "orientation": "portrait",
   "scope": "/",
   "icons": [
@@ -32,7 +32,7 @@
   ],
   "shortcuts": [
     {
-      "name": "الغرف",
+      "name": "دخول الغرف",
       "url": "/?action=rooms",
       "icons": [{ "src": "https://storage.googleapis.com/static.aistudio.google.com/stables/2025/03/06/f0e64906-e7e0-4a87-af9b-029e2467d302/f0e64906-e7e0-4a87-af9b-029e2467d302.png", "sizes": "192x192" }]
     }

@@ -44,6 +44,8 @@ interface AdminPanelProps {
   onUpdateAppLogo: (url: string) => void;
   appName: string;
   onUpdateAppName: (name: string) => void;
+  authBackground: string;
+  onUpdateAuthBackground: (url: string) => void;
 }
 
 const ROOT_ADMIN_EMAIL = 'root-admin@livetalk.com';
@@ -76,15 +78,12 @@ const AdminPanel: React.FC<AdminPanelProps> = (props) => {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, callback: (url: string) => void, w: number, h: number) => {
     const file = e.target.files?.[0];
     if (file) {
-      // السماح بحجم أكبر للـ GIF لضمان جودة الحركة
       const limit = file.type === 'image/gif' ? 1024 * 1024 : 500 * 1024;
       if (file.size > limit) { alert('حجم الملف كبير جداً!'); return; }
       
       const reader = new FileReader();
       reader.onload = async (ev) => {
         const result = ev.target?.result as string;
-        
-        // إذا كان الملف GIF، نرفعه فوراً دون ضغط للحفاظ على الحركة
         if (file.type === 'image/gif' || file.name.toLowerCase().endsWith('.gif')) {
           callback(result);
         } else {
@@ -162,7 +161,7 @@ const AdminPanel: React.FC<AdminPanelProps> = (props) => {
         {activeTab === 'gifts' && <AdminGifts gifts={props.gifts} onSaveGift={saveGift} handleFileUpload={handleFileUpload} />}
         {activeTab === 'store' && <AdminStore storeItems={props.storeItems} onSaveItem={saveStoreItem} handleFileUpload={handleFileUpload} />}
         {activeTab === 'vip' && <AdminVIP vipLevels={props.vipLevels} onSaveVip={saveVipLevel} handleFileUpload={handleFileUpload} />}
-        {activeTab === 'identity' && <AdminIdentity appLogo={props.appLogo} appBanner={props.appBanner} appName={props.appName} onUpdateAppLogo={props.onUpdateAppLogo} onUpdateAppBanner={props.onUpdateAppBanner} onUpdateAppName={props.onUpdateAppName} handleFileUpload={handleFileUpload} />}
+        {activeTab === 'identity' && <AdminIdentity appLogo={props.appLogo} appBanner={props.appBanner} appName={props.appName} authBackground={props.authBackground} onUpdateAppLogo={props.onUpdateAppLogo} onUpdateAppBanner={props.onUpdateAppBanner} onUpdateAppName={props.onUpdateAppName} onUpdateAuthBackground={props.onUpdateAuthBackground} handleFileUpload={handleFileUpload} />}
         {activeTab === 'maintenance' && <AdminMaintenance currentUser={props.currentUser} />}
       </div>
     </div>
