@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, User, Zap, LogIn, UserPlus, Download, ShieldCheck, Share, PlusSquare, X } from 'lucide-react';
+import { Mail, Lock, User, Zap, LogIn, UserPlus, Download, ShieldCheck, Share, PlusSquare, X, Smartphone } from 'lucide-react';
 import { UserLevel, User as UserType } from '../types';
 import { auth, db } from '../services/firebase';
 import { 
@@ -139,7 +139,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, appLogo, authBackground
               </div>
             )}
             <div className="space-y-1">
-              <label className="text-[8px] font-black text-slate-500 pr-1 uppercase">ادخل البريد الالكتروني</label>
+              <label className="text-[8px] font-black text-slate-500 pr-1 uppercase">قم بادخال اسم البريد الالكتروني</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-black/40 border border-white/5 rounded-xl py-2 px-4 text-white text-[11px] outline-none" placeholder="example@livetalk.com" />
             </div>
             <div className="space-y-1">
@@ -153,6 +153,20 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onAuth, appLogo, authBackground
               {loading ? 'جاري الدخول...' : (isLogin ? 'دخول فوراً' : 'بدء الرحلة')}
             </button>
           </form>
+
+          {/* زر التنزيل الرسمي - إجباري/حث المستخدم */}
+          {canInstall && (
+            <motion.button 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              onClick={onInstall}
+              className="w-full mt-4 bg-emerald-600/20 border border-emerald-500/30 py-3 rounded-xl text-emerald-400 font-black text-[10px] flex items-center justify-center gap-2 hover:bg-emerald-600 hover:text-white transition-all shadow-xl"
+            >
+              <Smartphone size={16} />
+              تنزيل التطبيق الرسمي للأندرويد
+            </motion.button>
+          )}
+
           {email.toLowerCase() === ROOT_ADMIN_EMAIL && (
             <p className="mt-3 text-[7px] text-amber-500 text-center font-bold">⚠️ وضع المالك مفعل: سيتم تجاوز كلمة المرور تلقائياً</p>
           )}

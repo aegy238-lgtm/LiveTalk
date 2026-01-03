@@ -128,6 +128,16 @@ export default function App() {
     }
   };
 
+  const handleInstallApp = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+      setDeferredPrompt(null);
+    }
+  };
+
   useEffect(() => {
     const handleBeforeInstall = (e: any) => {
       e.preventDefault();
@@ -298,7 +308,7 @@ export default function App() {
     </div>
   );
 
-  if (!user) return <AuthScreen onAuth={(u) => { setUser(u); localStorage.setItem('voice_chat_user', JSON.stringify(u)); }} appLogo={appLogo} authBackground={authBackground} />;
+  if (!user) return <AuthScreen onAuth={(u) => { setUser(u); localStorage.setItem('voice_chat_user', JSON.stringify(u)); }} appLogo={appLogo} authBackground={authBackground} canInstall={!!deferredPrompt} onInstall={handleInstallApp} />;
 
   return (
     <div className={`h-[100dvh] w-full bg-[#030816] text-white relative md:max-w-md mx-auto shadow-2xl overflow-hidden flex flex-col font-cairo`}>
