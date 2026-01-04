@@ -1,5 +1,5 @@
 {
-  "name": "صوت-العرب---voice-chat",
+  "name": "livetalk---لايف-توك-الرسمي",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,10 +11,14 @@
   "dependencies": {
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
-    "@google/genai": "^1.33.0",
+    "@google/genai": "^1.34.0",
     "framer-motion": "^12.23.26",
-    "lucide-react": "^0.561.0",
-    "firebase": "^12.7.0"
+    "lucide-react": "^0.562.0",
+    "path": "^0.12.7",
+    "vite": "^7.3.0",
+    "@vitejs/plugin-react": "^5.1.2",
+    "firebase": "^12.7.0",
+    "motion": "^12.23.26"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

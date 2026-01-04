@@ -1,7 +1,6 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import App from './LiveTalk-main/App.tsx';
 
 // تسجيل Service Worker لتمكين PWA بشكل احترافي
 if ('serviceWorker' in navigator) {
